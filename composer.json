@@ -20,7 +20,10 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpmd/phpmd": "^2.15",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5.3",
+        "squizlabs/php_codesniffer": "^3.13"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +40,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "git --git-dir=.git config core.hooksPath ./.hooks"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -50,14 +54,17 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+        "check": [
+            "@cs-check-code",
+            "@cs-check-test-code",
+            "@phpstan",
+            "@md"
         ],
-        "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
-        ]
+        "cs-fix": "./vendor/bin/phpcbf --standard=PSR12 app/",
+        "cs-check-code": "./vendor/bin/phpcs --standard=PSR12 app/",
+        "cs-check-test-code": "vendor/bin/phpcs --standard=PSR12 tests/",
+        "phpstan": "./vendor/bin/phpstan analyse app/ --memory-limit=-1",
+        "md": "./vendor/bin/phpmd app,config,resources,routes,database,tests text ./phpmd.xml"
     },
     "extra": {
         "laravel": {
