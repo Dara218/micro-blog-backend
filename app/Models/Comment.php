@@ -68,8 +68,6 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_comment_id');
     }
 
-    // Todo: Clean docblocks.
-
     /**
      * Get the likes for this comment.
      *
