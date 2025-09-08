@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\{
+    Post,
+    User,
+};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +21,9 @@ class MentionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'post_id' => Post::factory(),
+            'mentioned_user_id' => User::factory(),
+            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

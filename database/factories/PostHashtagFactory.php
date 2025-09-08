@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\{
+    Hashtag,
+    Post,
+};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +21,9 @@ class PostHashtagFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'post_id' => Post::factory(),
+            'hashtag_id' => Hashtag::factory(),
+            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

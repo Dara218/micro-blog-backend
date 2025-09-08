@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Hashtag;
+use App\Models\Post;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class HashtagSeeder extends Seeder
+class PostSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,12 +18,12 @@ class HashtagSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         // Truncate the table to prevent duplication
-        Hashtag::truncate();
+        Post::truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $count = config('constants.default_seeder_count') * 2; // Some hashtags
+        $count = config('constants.default_seeder_count') * 2; // More posts than users
 
-        Hashtag::factory($count)->create();
+        Post::factory($count)->create();
     }
 }

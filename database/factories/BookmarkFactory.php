@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\{
+    Post,
+    User,
+};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +21,9 @@ class BookmarkFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'post_id' => Post::factory(),
+            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

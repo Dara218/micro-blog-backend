@@ -18,18 +18,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('reporter_id')->constrained('users');
             $table->bigInteger('reportable_id');
+            $table->string('reportable_type');
             $table->string('reason', 255);
             $table->text('notes')->nullable();
             $table->enum('status', ReportStatus::list());
             $table->timestamps();
         });
     }
-
-    /**
-     * Todo:
-     * 1. Run migrations.
-     * 2. Create seeders.
-     */
 
     /**
      * Reverse the migrations.

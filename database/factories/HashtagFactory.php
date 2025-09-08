@@ -16,8 +16,35 @@ class HashtagFactory extends Factory
      */
     public function definition(): array
     {
+        $name = '#' . fake()->unique()->word();
+
         return [
-            //
+            'name' => $name,
+            'usage_count' => fake()->numberBetween(0, 1000),
         ];
+    }
+
+    /**
+     * Create a popular hashtag.
+     *
+     * @return static
+     */
+    public function popular(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'usage_count' => fake()->numberBetween(500, 10000),
+        ]);
+    }
+
+    /**
+     * Create a trending hashtag.
+     *
+     * @return static
+     */
+    public function trending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'usage_count' => fake()->numberBetween(1000, 50000),
+        ]);
     }
 }
