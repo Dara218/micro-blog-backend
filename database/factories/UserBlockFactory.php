@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,8 @@ class UserBlockFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'blocker_id' => User::factory(),
+            'blocked_id' => User::factory(),
         ];
     }
 }

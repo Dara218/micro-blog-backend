@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->comment('Recipient')->constrained('users');
             $table->string('type', 100)->comment('e.g., post_liked, comment_added, followed_you');
             $table->json('data')->comment('actor_id, post_id, etc');
-            $table->timestamp('read_at');
+            $table->timestamp('read_at')->nullable();
             $table->timestamp('created_at');
         });
     }
