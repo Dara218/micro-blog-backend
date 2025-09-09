@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         return response([
             'success' => true,
-            'data' => $request->user(),
+            'user' => $request->user(),
         ]);
     }
 }

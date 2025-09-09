@@ -4,7 +4,7 @@ use App\Http\Controllers\User\LoginController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/sanctum/csrf-cookie', fn() => response()->json(['message' => 'CSRF cookie set']));
+Route::get('sanctum/csrf-cookie', fn() => response()->json(['message' => 'CSRF cookie set']));
 
 Route::name('user')
     ->prefix('user')
