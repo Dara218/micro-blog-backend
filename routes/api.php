@@ -35,4 +35,5 @@ Route::controller(PostController::class)
         Route::get('{id}', 'getUserPosts')->name('user');
         Route::get('{id}/friends', 'getFriendsPost')->name('friends');
         Route::get('{id}/home', 'getHomePosts')->name('home');
+        Route::post('store', 'store')->name('store');
     });

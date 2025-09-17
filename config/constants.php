@@ -16,4 +16,7 @@
 */
 return [
     'default_seeder_count' => 10,
+    'validation' => [
+        'max_video_size' => 5000,
+    ],
 ];

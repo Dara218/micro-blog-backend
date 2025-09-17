@@ -44,7 +44,7 @@ class PostRepository extends BaseRepository implements PostInterface
         return $this->model
             ->where('user_id', $userId)
             ->orWhereIn('user_id', $friendsIds)
-            ->with('user')
+            ->with(['user', 'media'])
             ->latest()
             ->get();
     }
