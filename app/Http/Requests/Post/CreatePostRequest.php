@@ -28,12 +28,12 @@ class CreatePostRequest extends FormRequest
             'images' => [
                 'required_without_all:content,videos',
                 'image',
-                'mimes:png,jpg,gif',
+                'mimes:png,jpg,jpeg,gif',
             ],
             'videos' => [
                 'required_without_all:content,images',
                 'mimes:mp4,mov,ogg,webm',
-                'max:' . constant('validation.max_video_size'),
+                'max:' . config('constants.validation.max_video_size'),
             ],
         ];
     }
