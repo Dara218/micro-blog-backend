@@ -140,13 +140,13 @@ class PostController extends Controller
         DB::beginTransaction();
 
         try {
-            $post = $this->postInterface->create($request->all());
+            $post = $this->postService->handleCreatePost($request);
 
             DB::commit();
 
             return response([
                 'success' => true,
-                'post' => $post->load(['user', 'media']),
+                'post' => $post,
             ]);
         } catch (\Exception $error) {
             DB::rollBack();

@@ -26,13 +26,12 @@ class CreatePostRequest extends FormRequest
                 'required_without_all:images,videos',
             ],
             'images' => [
+                'array',
                 'required_without_all:content,videos',
-                'image',
-                'mimes:png,jpg,jpeg,gif',
             ],
             'videos' => [
+                'array',
                 'required_without_all:content,images',
-                'mimes:mp4,mov,ogg,webm',
                 'max:' . config('constants.validation.max_video_size'),
             ],
         ];

@@ -9,4 +9,20 @@ class PostMedia extends Model
 {
     /** @use HasFactory<\Database\Factories\PostMediaFactory> */
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'post_id',
+        'type',
+        'url',
+        'mime_type',
+        'width',
+        'height',
+        'duration_seconds',
+        'sort_order',
+    ];
 }

@@ -19,7 +19,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->enum('visibility', PostVisibility::list());
             $table->boolean('is_comments_allowed')->default(CommentsAllowFlag::ALLOW);
             $table->boolean('is_shares_allowed')->default(SharesAllowFlag::ALLOW);
