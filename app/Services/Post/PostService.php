@@ -146,10 +146,15 @@ class PostService
         // Open as read-only stream
         $fileStream = fopen($uploadedFile->getRealPath(), 'r');
 
-        $path = "posts/$userId/" . now() . '-' . strtolower($uploadedFile->getClientOriginalName());
-        $result = $this->storageService->put($path, $fileStream);
+        // Generate safe filename using helper
+        $safeFilename = generateSafeFilename($uploadedFile);
+        $path = "posts/$userId/$safeFilename";
 
-        fclose($fileStream);
+        try {
+            $result = $this->storageService->put($path, $fileStream);
+        } finally {
+            fclose($fileStream);
+        }
 
         $fileSizes = $mediaType === MediaType::IMAGE->value
             ? $this->getImageSize($uploadedFile)
