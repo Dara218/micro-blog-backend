@@ -22,7 +22,7 @@ class PostSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $count = config('constants.default_seeder_count') * 2; // More posts than users
+        $count = config('constants.default.seeder_count') * 2; // More posts than users
 
         Post::factory($count)->create();
     }

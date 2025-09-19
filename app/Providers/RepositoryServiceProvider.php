@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Interfaces\{
     FollowInterface,
     PostInterface,
+    PostMediaInterface,
     UserInterface,
 };
 use App\Repositories\{
     FollowRepository,
+    PostMediaRepository,
     PostRepository,
     UserRepository,
 };
@@ -32,6 +34,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             FollowInterface::class,
             FollowRepository::class,
+        );
+        $this->app->bind(
+            PostMediaInterface::class,
+            PostMediaRepository::class,
         );
     }
 

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Post\CreatePostRequest;
 use App\Interfaces\PostInterface;
 use App\Services\Common\LogService;
 use App\Services\Post\PostService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -60,7 +62,7 @@ class PostController extends Controller
 
             return response([
                 'success' => false,
-                'posts' => null,
+                'message' => 'Error fetching post.',
             ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -90,7 +92,7 @@ class PostController extends Controller
 
             return response([
                 'success' => false,
-                'posts' => null,
+                'message' => 'Error fetching post.',
             ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -121,7 +123,42 @@ class PostController extends Controller
 
             return response([
                 'success' => false,
-                'posts' => null,
+                'message' => 'Error fetching posts.',
+            ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Create a new post.
+     *
+     * @param \App\Http\Requests\Post\CreatePostRequest $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(CreatePostRequest $request): Response
+    {
+        DB::beginTransaction();
+
+        try {
+            $post = $this->postService->handleCreatePost($request);
+
+            DB::commit();
+
+            return response([
+                'success' => true,
+                'post' => $post,
+            ]);
+        } catch (\Exception $error) {
+            DB::rollBack();
+
+            LogService::error('Error creating post.', [
+                'error' => $error->getMessage(),
+                'trace' => $error->getTraceAsString(),
+            ]);
+
+            return response([
+                'success' => false,
+                'message' => 'Error creating post.',
             ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -22,7 +22,7 @@ class UserBlockSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $count = config('constants.default_seeder_count') / 2; // Fewer blocks
+        $count = config('constants.default.seeder_count') / 2; // Fewer blocks
 
         UserBlock::factory($count)->create();
     }
