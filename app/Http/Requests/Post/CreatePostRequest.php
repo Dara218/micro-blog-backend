@@ -29,11 +29,33 @@ class CreatePostRequest extends FormRequest
                 'array',
                 'required_without_all:content,videos',
             ],
+            'images.*' => [
+                'file',
+                'image',
+                'max:' . config('constants.validation.max_image_size'),
+            ],
             'videos' => [
                 'array',
                 'required_without_all:content,images',
+            ],
+            'videos.*' => [
+                'file',
                 'max:' . config('constants.validation.max_video_size'),
             ],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'images.*.max' => __('validation.custom.image.max', [
+                'max' => config('constants.validation.max_image_size'),
+            ]),
         ];
     }
 }
