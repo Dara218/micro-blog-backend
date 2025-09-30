@@ -19,6 +19,7 @@ return [
         'seeder_count' => 10,
     ],
     'validation' => [
-        'max_video_size' => 5000,
+        'max_video_size' => 25000, // in KB
+        'max_image_size' => 5000, // in KB
     ],
 ];

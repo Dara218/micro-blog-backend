@@ -66,6 +66,34 @@ class PostService
     }
 
     /**
+     * Build attributes for post_media creation from processed file result.
+     *
+     * @param int $postId
+     * @param string $mediaType
+     * @param array $result
+     * @param int $sortOrder
+     *
+     * @return array<string, mixed>
+     */
+    private function buildPostMediaAttributes(
+        int $postId,
+        string $mediaType,
+        array $result,
+        int $sortOrder,
+    ): array {
+        return [
+            'post_id' => $postId,
+            'type' => $mediaType,
+            'url' => $result['path'],
+            'mime_type' => $result['mime'],
+            'width' => $result['width'],
+            'height' => $result['height'],
+            'duration_seconds' => $result['duration'] ?? null,
+            'sort_order' => $sortOrder,
+        ];
+    }
+
+    /**
      * Get the friends Ids.
      *
      * @param int $userId The user's id (posts.user_id)
@@ -114,19 +142,40 @@ class PostService
      */
     private function getVideoSize(UploadedFile $uploadedFile)
     {
-        $ffmpeg = FFMpeg::create();
+        // Allow disabling metadata extraction so we can store videos without ffmpeg/ffprobe
+        if (!config('media.extract_video_metadata', false)) {
+            return [
+                'width' => 0,
+                'height' => 0,
+                'duration' => 0,
+            ];
+        }
 
-        $video = $ffmpeg->open($uploadedFile->getRealPath());
-        $streams = $video
-            ->getStreams()
-            ->videos()
-            ->first();
+        try {
+            $ffmpeg = FFMpeg::create([
+                'ffmpeg.binaries' => config('media.ffmpeg.binaries', '/usr/bin/ffmpeg'),
+                'ffprobe.binaries' => config('media.ffprobe.binaries', '/usr/bin/ffprobe'),
+            ]);
 
-        return [
-            'width' => $streams->get('width') ?? 0,
-            'height' => $streams->get('height') ?? 0,
-            'duration' => $streams->get('duration') ?? 0,
-        ];
+            $video = $ffmpeg->open($uploadedFile->getRealPath());
+            $streams = $video
+                ->getStreams()
+                ->videos()
+                ->first();
+
+            return [
+                'width' => $streams->get('width') ?? 0,
+                'height' => $streams->get('height') ?? 0,
+                'duration' => $streams->get('duration') ?? 0,
+            ];
+        } catch (\Throwable $e) {
+            // On any failure, don't block uploads—just return zeroed metadata
+            return [
+                'width' => 0,
+                'height' => 0,
+                'duration' => 0,
+            ];
+        }
     }
 
     /**
@@ -146,10 +195,15 @@ class PostService
         // Open as read-only stream
         $fileStream = fopen($uploadedFile->getRealPath(), 'r');
 
-        $path = "posts/$userId/" . now() . '-' . strtolower($uploadedFile->getClientOriginalName());
-        $result = $this->storageService->put($path, $fileStream);
+        // Generate safe filename using helper
+        $safeFilename = generateSafeFilename($uploadedFile);
+        $path = "posts/$userId/$safeFilename";
 
-        fclose($fileStream);
+        try {
+            $result = $this->storageService->put($path, $fileStream);
+        } finally {
+            fclose($fileStream);
+        }
 
         $fileSizes = $mediaType === MediaType::IMAGE->value
             ? $this->getImageSize($uploadedFile)
@@ -202,7 +256,7 @@ class PostService
     public function handleCreatePost(Request $request)
     {
         $images = Arr::wrap($request->file('images') ?? []);
-        // $videos = Arr::wrap($request->file('videos') ?? []);
+        $videos = Arr::wrap($request->file('videos') ?? []);
 
         $post = $this->postInterface
             ->create($request->only(
@@ -212,32 +266,63 @@ class PostService
                 'is_shares_allowed',
             ));
 
-        foreach ($images as $index => $image) {
-            if (!$image instanceof UploadedFile) {
-                continue;
+        $sortOrder = 0;
+
+        if ($images) {
+            foreach ($images as $image) {
+                if (!$image instanceof UploadedFile) {
+                    continue;
+                }
+
+                $result = $this->processFile(
+                    $image,
+                    $post->user_id,
+                    MediaType::IMAGE->value
+                );
+
+                try {
+                    $this->postMediaInterface->create(
+                        $this->buildPostMediaAttributes(
+                            $post->id,
+                            MediaType::IMAGE->value,
+                            $result,
+                            $sortOrder++,
+                        ),
+                    );
+                } catch (\Exception $error) {
+                    $this->storageService->delete($result['path']);
+
+                    throw $error;
+                }
             }
+        }
 
-            $result = $this->processFile(
-                $image,
-                $post->user_id,
-                MediaType::IMAGE->value
-            );
+        if ($videos) {
+            foreach ($videos as $video) {
+                if (!$video instanceof UploadedFile) {
+                    continue;
+                }
 
-            try {
-                $this->postMediaInterface->create([
-                    'post_id' => $post->id,
-                    'type' => MediaType::IMAGE->value,
-                    'url' => $result['path'],
-                    'mime_type' =>  $result['mime'],
-                    'width' => $result['width'],
-                    'height' => $result['height'],
-                    'duration_seconds' => $result['duration'] ?? null,
-                    'sort_order' => $index,
-                ]);
-            } catch (\Exception $error) {
-                $this->storageService->delete($result['path']);
+                $result = $this->processFile(
+                    $video,
+                    $post->user_id,
+                    MediaType::VIDEO->value
+                );
 
-                throw $error;
+                try {
+                    $this->postMediaInterface->create(
+                        $this->buildPostMediaAttributes(
+                            $post->id,
+                            MediaType::VIDEO->value,
+                            $result,
+                            $sortOrder++,
+                        ),
+                    );
+                } catch (\Exception $error) {
+                    $this->storageService->delete($result['path']);
+
+                    throw $error;
+                }
             }
         }
 
