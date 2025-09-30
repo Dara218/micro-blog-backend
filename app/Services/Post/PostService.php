@@ -266,8 +266,10 @@ class PostService
                 'is_shares_allowed',
             ));
 
+        $sortOrder = 0;
+
         if ($images) {
-            foreach ($images as $index => $image) {
+            foreach ($images as $image) {
                 if (!$image instanceof UploadedFile) {
                     continue;
                 }
@@ -284,7 +286,7 @@ class PostService
                             $post->id,
                             MediaType::IMAGE->value,
                             $result,
-                            $index,
+                            $sortOrder++,
                         ),
                     );
                 } catch (\Exception $error) {
@@ -296,7 +298,7 @@ class PostService
         }
 
         if ($videos) {
-            foreach ($videos as $index => $video) {
+            foreach ($videos as $video) {
                 if (!$video instanceof UploadedFile) {
                     continue;
                 }
@@ -313,7 +315,7 @@ class PostService
                             $post->id,
                             MediaType::VIDEO->value,
                             $result,
-                            $index,
+                            $sortOrder++,
                         ),
                     );
                 } catch (\Exception $error) {
