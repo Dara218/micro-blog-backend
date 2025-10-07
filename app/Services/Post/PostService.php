@@ -70,7 +70,7 @@ class PostService
      *
      * @param int $postId
      * @param string $mediaType
-     * @param array $result
+     * @param array<string, mixed> $result
      * @param int $sortOrder
      *
      * @return array<string, mixed>
@@ -163,6 +163,14 @@ class PostService
                 ->videos()
                 ->first();
 
+            if ($streams === null) {
+                return [
+                    'width' => 0,
+                    'height' => 0,
+                    'duration' => 0,
+                ];
+            }
+
             return [
                 'width' => $streams->get('width') ?? 0,
                 'height' => $streams->get('height') ?? 0,
@@ -185,7 +193,7 @@ class PostService
      * @param int $userId The user's id (posts.user_id)
      * @param string $mediaType (IMAGE/VIDEO)
      *
-     * @return array<mixed, string>
+     * @return array<string, bool|int|string>
      */
     private function processFile(
         UploadedFile $uploadedFile,
@@ -194,6 +202,10 @@ class PostService
     ): array {
         // Open as read-only stream
         $fileStream = fopen($uploadedFile->getRealPath(), 'r');
+
+        if ($fileStream === false) {
+            throw new \RuntimeException('Failed to open file for reading');
+        }
 
         // Generate safe filename using helper
         $safeFilename = generateSafeFilename($uploadedFile);
@@ -249,7 +261,7 @@ class PostService
     /**
      * Handles file uplaod and data insertion in database.
      *
-     * @param \Illuminate\Http\Request $requet
+     * @param \Illuminate\Http\Request $request
      *
      * @return \App\Models\Post|null
      */
@@ -258,6 +270,7 @@ class PostService
         $images = Arr::wrap($request->file('images') ?? []);
         $videos = Arr::wrap($request->file('videos') ?? []);
 
+        /** @var \App\Models\Post $post */
         $post = $this->postInterface
             ->create($request->only(
                 'user_id',
@@ -290,7 +303,7 @@ class PostService
                         ),
                     );
                 } catch (\Exception $error) {
-                    $this->storageService->delete($result['path']);
+                    $this->storageService->delete((string) $result['path']);
 
                     throw $error;
                 }
@@ -319,7 +332,7 @@ class PostService
                         ),
                     );
                 } catch (\Exception $error) {
-                    $this->storageService->delete($result['path']);
+                    $this->storageService->delete((string) $result['path']);
 
                     throw $error;
                 }

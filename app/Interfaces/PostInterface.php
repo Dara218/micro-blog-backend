@@ -19,7 +19,7 @@ interface PostInterface extends BaseInterface
      * Retrieve posts made by the user's friends.
      * Filters posts where the user ID matches any of the provided friend IDs.
      *
-     * @param array $friendsIds An array of user IDs representing the user's friends.
+     * @param array<int, mixed> $friendsIds An array of user IDs representing the user's friends.
      *
      * @return \Illuminate\Database\Eloquent\Collection A collection of Post models.
      */
@@ -32,7 +32,7 @@ interface PostInterface extends BaseInterface
      * ordered by the latest, with associated user data eager-loaded.
      *
      * @param int $userId The ID of the authenticated user.
-     * @param array $friendsIds An array of user IDs representing the user's friends.
+     * @param array<int, mixed> $friendsIds An array of user IDs representing the user's friends.
      *
      * @return \Illuminate\Database\Eloquent\Collection A collection of Post models.
      */

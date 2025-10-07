@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\User\{
     LoginController,
@@ -36,4 +37,12 @@ Route::controller(PostController::class)
         Route::get('{id}/friends', 'getFriendsPost')->name('friends');
         Route::get('{id}/home', 'getHomePosts')->name('home');
         Route::post('store', 'store')->name('store');
+    });
+
+// Comment Routes
+Route::controller(CommentController::class)
+    ->name('comment.')
+    ->prefix('comment')
+    ->group(function() {
+        Route::get('{id}/get-comments', 'getCommentByParentId')->name('by-parent-comment');
     });
