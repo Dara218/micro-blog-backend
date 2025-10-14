@@ -13,7 +13,7 @@ class Report extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'reporter_id',
@@ -27,7 +27,7 @@ class Report extends Model
     /**
      * Get the reportable model (post or comment).
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, \App\Models\Report>
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function reportable()
     {
@@ -37,7 +37,7 @@ class Report extends Model
     /**
      * Get the user who made the report.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, \App\Models\Report>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function reporter()
     {

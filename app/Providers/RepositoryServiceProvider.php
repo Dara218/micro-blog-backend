@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Interfaces\{
+    CommentInterface,
     FollowInterface,
     PostInterface,
     PostMediaInterface,
     UserInterface,
 };
 use App\Repositories\{
+    CommentRepository,
     FollowRepository,
     PostMediaRepository,
     PostRepository,
@@ -38,6 +40,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             PostMediaInterface::class,
             PostMediaRepository::class,
+        );
+        $this->app->bind(
+            CommentInterface::class,
+            CommentRepository::class,
         );
     }
 

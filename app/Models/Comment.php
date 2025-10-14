@@ -18,7 +18,7 @@ class Comment extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'post_id',
@@ -65,7 +65,8 @@ class Comment extends Model
      */
     public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_comment_id');
+        return $this->hasMany(Comment::class, 'parent_comment_id')
+            ->with(['user', 'replies']);
     }
 
     /**

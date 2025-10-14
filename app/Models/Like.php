@@ -20,7 +20,7 @@ class Like extends Model
     /**
      * Get the likeable model (post or comment).
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, \App\Models\Like>
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function likeable()
     {

@@ -80,7 +80,7 @@ class LogService
      *
      * @param string $logType (error, info, debug, notice)
      * @param string $title The title of the log
-     * @param array $context The body of the log
+     * @param array<string, mixed> $context The body of the log
      * @param string|null $channel The channel name of the log
      *
      * @return void

@@ -10,7 +10,7 @@ class LoginService
     /**
      * Handles the user login process.
      *
-     * @param array<mixed, string> $data
+     * @param array<mixed, string> $loginDetails
      *
      * @return bool
      */

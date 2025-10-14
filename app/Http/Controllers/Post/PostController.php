@@ -70,7 +70,6 @@ class PostController extends Controller
     /**
      * Get the posts of the user's friends.
      *
-     * @param \Illuminate\Http\Request $request
      * @param int $id The user id (posts.user_id)
      *
      * @return \Illuminate\Http\Response
@@ -101,7 +100,6 @@ class PostController extends Controller
      * Get all posts for the home page.
      * Includes authenticated user posts + friends posts.
      *
-     * @param \Illuminate\Http\Request $request
      * @param int $id The user id (posts.user_id)
      *
      * @return \Illuminate\Http\Response
