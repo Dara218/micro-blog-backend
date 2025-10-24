@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\{
     MorphMany,
 };
 
+/**
+ * @property bool $is_liked Dynamic property to indicate if the comment is liked by the authenticated user.
+ */
 class Comment extends Model
 {
     /** @use HasFactory<\Database\Factories\CommentFactory> */
@@ -66,7 +69,7 @@ class Comment extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_comment_id')
-            ->with(['user', 'replies']);
+            ->with(['user', 'replies', 'likes']);
     }
 
     /**
