@@ -25,7 +25,7 @@ class CommentRepository extends BaseRepository implements CommentInterface
     {
         return $this->model
             ->where('parent_comment_id', $id)
-            ->with('user', 'replies')
+            ->with('user', 'replies', 'likes')
             ->get();
     }
 }

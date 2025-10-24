@@ -28,12 +28,27 @@ class LikeRepostitory extends BaseRepository implements LikeInterface
     /**
      * {@inheritDoc}
      */
+    public function getByUserIdAndLikeableId(int $id, int $userId, string $likeableType)
+    {
+        return $this->model
+            ->withTrashed()
+            ->where('likeable_id', $id)
+            ->where('user_id', $userId)
+            ->where('likeable_type', $likeableType)
+            ->with('likeable')
+            ->first();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getByUserIdAndPostId(int $id, int $userId)
     {
         return $this->model
             ->withTrashed()
             ->where('likeable_id', $id)
             ->where('user_id', $userId)
+            ->where('likeable_type', 'post')
             ->with('likeable')
             ->first();
     }

@@ -31,6 +31,8 @@ class PostRepository extends BaseRepository implements PostInterface
                 'media',
                 'comments.user',
                 'comments.replies',
+                'comments.likes',
+                'comments.replies.likes',
                 'likes.user'
             ])
             ->latest()
@@ -49,6 +51,8 @@ class PostRepository extends BaseRepository implements PostInterface
                 'media',
                 'comments.user',
                 'comments.replies',
+                'comments.likes',
+                'comments.replies.likes',
                 'likes.user'
             ])
             ->latest()
@@ -68,6 +72,8 @@ class PostRepository extends BaseRepository implements PostInterface
                 'media',
                 'comments.user',
                 'comments.replies',
+                'comments.likes',
+                'comments.replies.likes',
                 'likes.user',
             ])
             ->latest()
