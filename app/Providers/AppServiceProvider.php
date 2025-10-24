@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\{
+    Comment,
+    Post,
+};
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Configure morph map for polymorphic relationships
+        Relation::morphMap([
+            'post' => Post::class,
+            'comment' => Comment::class,
+        ]);
     }
 }

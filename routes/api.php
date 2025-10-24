@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Comment\CommentController;
+use App\Http\Controllers\Like\LikeController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\User\{
     LoginController,
@@ -45,4 +46,13 @@ Route::controller(CommentController::class)
     ->prefix('comment')
     ->group(function() {
         Route::get('{id}/get-comments', 'getCommentByParentId')->name('by-parent-comment');
+    });
+
+// Like Routes
+Route::controller(LikeController::class)
+    ->name('like.')
+    ->prefix('like')
+    ->group(function() {
+        Route::post('process', 'likePost')->name('process]');
+        Route::get('get/{id}/{user_id}', 'getByIdAndUserId')->name('getByIdAndUserId');
     });

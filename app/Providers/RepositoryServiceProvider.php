@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Interfaces\{
     CommentInterface,
     FollowInterface,
+    LikeInterface,
     PostInterface,
     PostMediaInterface,
     UserInterface,
@@ -16,6 +17,7 @@ use App\Repositories\{
     PostRepository,
     UserRepository,
 };
+use App\Repositories\LikeRepostitory;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -44,6 +46,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             CommentInterface::class,
             CommentRepository::class,
+        );
+        $this->app->bind(
+            LikeInterface::class,
+            LikeRepostitory::class,
         );
     }
 

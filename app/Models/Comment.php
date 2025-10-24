@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\{
     MorphMany,
 };
 
+/**
+ * @property bool $is_liked Dynamic property to indicate if the comment is liked by the authenticated user.
+ */
 class Comment extends Model
 {
     /** @use HasFactory<\Database\Factories\CommentFactory> */

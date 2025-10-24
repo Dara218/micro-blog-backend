@@ -3,19 +3,44 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{
+    Model,
+    SoftDeletes,
+};
 
 class Like extends Model
 {
     /** @use HasFactory<\Database\Factories\LikeFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     /**
-     * Indicates if the model should be timestamped.
+     * Indicates that only created_at timestamp should be used.
      *
-     * @var bool
+     * @var string|null
      */
-    public $timestamps = false;
+    public const UPDATED_AT = null;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'user_id',
+        'likeable_id',
+        'likeable_type',
+    ];
+
+    /**
+     * Get the user who liked the post/comment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get the likeable model (post or comment).
