@@ -46,6 +46,7 @@ Route::controller(CommentController::class)
     ->prefix('comment')
     ->group(function() {
         Route::get('{id}/get-comments', 'getCommentByParentId')->name('by-parent-comment');
+        Route::post('create', 'createPost')->name('create');
     });
 
 // Like Routes

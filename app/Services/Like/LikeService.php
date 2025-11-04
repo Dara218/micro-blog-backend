@@ -2,6 +2,7 @@
 
 namespace App\Services\Like;
 
+use App\Enums\LikeableType;
 use App\Interfaces\{
     LikeInterface,
     PostInterface,
@@ -109,17 +110,21 @@ class LikeService
         $normalizedType = $this->normalizeLikeableType($likeableType);
 
         switch ($normalizedType) {
-            case 'post':
+            case LikeableType::POST->value:
                 $model = Post::find($likeableId);
+
                 if (!$model) {
                     throw new \Exception("Post with ID {$likeableId} not found");
                 }
+
                 return $model;
-            case 'comment':
+            case LikeableType::COMMENT->value:
                 $model = Comment::find($likeableId);
+
                 if (!$model) {
                     throw new \Exception("Comment with ID {$likeableId} not found");
                 }
+
                 return $model;
             default:
                 throw new \Exception("Unsupported likeable type: {$likeableType}");
@@ -138,9 +143,9 @@ class LikeService
         // Convert full class names to simple format
         switch ($likeableType) {
             case 'App\Models\Post':
-                return 'post';
+                return LikeableType::POST->value;
             case 'App\Models\Comment':
-                return 'comment';
+                return LikeableType::COMMENT->value;
             default:
                 // Assume it's already in simple format
                 return strtolower($likeableType);

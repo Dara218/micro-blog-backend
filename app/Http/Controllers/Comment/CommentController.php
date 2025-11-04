@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Comment;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Comment\CreateCommentRequest;
 use App\Interfaces\CommentInterface;
+use App\Services\Comment\CommentService;
 use App\Services\Common\LogService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -17,13 +20,22 @@ class CommentController extends Controller
     protected CommentInterface $commentInterface;
 
     /**
+     * CommentService instance.
+     *
+     * @var \App\Services\Comment\CommentService $commentService
+     */
+    protected CommentService $commentService;
+
+    /**
      * Setup the controller.
      *
      * @param \App\Interfaces\CommentInterface $commentInterface
+     * @param \App\Services\Comment\CommentService $commentService
      */
-    public function __construct(CommentInterface $commentInterface)
+    public function __construct(CommentInterface $commentInterface, CommentService $commentService)
     {
         $this->commentInterface = $commentInterface;
+        $this->commentService = $commentService;
     }
 
     /**
@@ -51,6 +63,37 @@ class CommentController extends Controller
             return response([
                 'success' => false,
                 'message' => 'Error fetching comments.',
+            ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function createPost(CreateCommentRequest $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $comment = $this->commentInterface->create($request->validated())->load('user');
+
+            // Increment the comment count on posts table
+            $this->commentService->incrementCommentCount($comment->post_id);
+
+            DB::commit();
+
+            return response([
+                'success' => true,
+                'comment' => $comment,
+            ]);
+        } catch (\Exception $error) {
+            DB::rollBack();
+
+            LogService::error('Error creating a comment.', [
+                'error' => $error->getMessage(),
+                'trace' => $error->getTraceAsString(),
+            ]);
+
+            return response([
+                'success' => false,
+                'message' => 'Error creating a comment.',
             ])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

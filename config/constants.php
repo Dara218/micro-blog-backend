@@ -21,5 +21,6 @@ return [
     'validation' => [
         'max_video_size' => 25000, // in KB
         'max_image_size' => 5000, // in KB
+        'max_comment_context_chars' => 100,
     ],
 ];
